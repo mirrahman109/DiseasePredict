@@ -6,7 +6,6 @@ A comprehensive Django-based web application that uses machine learning to predi
 
 - **Disease Prediction**: Advanced ML model using Support Vector Classification (SVC) to predict diseases based on symptoms
 - **Medicine Recommendations**: Personalized medication suggestions for predicted diseases
-- **Health Guidance**: Comprehensive precautions, diet plans, and workout routines
 - **Symptom Analysis**: Detailed breakdown of how each symptom contributes to the diagnosis
 - **User-Friendly Interface**: Clean, responsive web interface for easy interaction
 - **Multiple Predictions**: Shows top 3 most likely diseases with confidence scores
@@ -19,8 +18,8 @@ A comprehensive Django-based web application that uses machine learning to predi
   - Pandas, NumPy for data processing
   - Joblib for model persistence
 - **Frontend**: HTML5, CSS3, Bootstrap
-- **Database**: SQLite (development), PostgreSQL ready
-- **Deployment**: Configured for Heroku, Railway, Render
+- **Database**: SQLite (development)
+
 
 ## 📊 Machine Learning Models
 
@@ -33,7 +32,7 @@ The system implements and compares multiple ML algorithms:
 
 ### Model Performance
 - **Training Accuracy**: 100%
-- **Testing Accuracy**: 100%
+- **Testing Accuracy**: 99.19%
 - **Disease Classes**: 41 different diseases
 - **Symptoms**: 132 different symptoms
 
@@ -129,14 +128,6 @@ heroku create your-app-name
 git push heroku main
 ```
 
-### Railway Deployment
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
-railway login
-railway new
-railway deploy
-```
 
 ### Environment Variables
 For production deployment, set these environment variables:
@@ -153,8 +144,12 @@ For production deployment, set these environment variables:
    - Disease name and confidence score
    - Symptom contribution analysis
    - Medicine recommendations
-   - Precautions and diet suggestions
-   - Workout recommendations
+<img width="796" height="832" alt="Screenshot 2025-07-31 190925" src="https://github.com/user-attachments/assets/10021e61-8079-42c5-983f-c049cad75858" />
+<img width="742" height="796" alt="Screenshot 2025-07-31 190944" src="https://github.com/user-attachments/assets/b3275e18-3e73-428b-8a0e-2017bb852574" />
+<img width="1063" height="913" alt="Screenshot 2025-07-31 191038" src="https://github.com/user-attachments/assets/0694a448-0022-4a8b-91d8-4f6383914b03" />
+<img width="1069" height="649" alt="Screenshot 2025-07-31 191045" src="https://github.com/user-attachments/assets/0bcde71d-38e6-40f1-8ba5-0c1b812c9f43" />
+
+   
 
 ## 🤖 Machine Learning Pipeline
 
