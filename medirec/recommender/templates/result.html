@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Report - Disease Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --dark-color: #1f2937;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-section p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .prediction-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .prediction-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+            color: white;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .disease-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .metric-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-content {
+            padding: 0;
+        }
+
+        .content-section {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .content-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .description-icon { background: rgba(59, 130, 246, 0.1); color: var(--info-color); }
+        .medicine-icon { background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        .contribution-icon { background: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+
+        /* Smart Contribution UI */
+        .contributions-container {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .contribution-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .contribution-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .contribution-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .contribution-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .contribution-item.positive {
+            border-left-color: var(--success-color);
+        }
+
+        .contribution-item.negative {
+            border-left-color: var(--danger-color);
+        }
+
+        .contribution-item.neutral {
+            border-left-color: #9ca3af;
+        }
+
+        .symptom-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .positive .symptom-indicator {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .negative .symptom-indicator {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+            color: white;
+        }
+
+        .neutral .symptom-indicator {
+            background: linear-gradient(135deg, #9ca3af, #6b7280);
+            color: white;
+        }
+
+        .symptom-details {
+            flex: 1;
+        }
+
+        .symptom-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+        }
+
+        .symptom-impact {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .contribution-value {
+            text-align: right;
+            margin-left: 1rem;
+        }
+
+        .contribution-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .positive .contribution-number {
+            color: var(--success-color);
+        }
+
+        .negative .contribution-number {
+            color: var(--danger-color);
+        }
+
+        .neutral .contribution-number {
+            color: #6b7280;
+        }
+
+        .contribution-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Smart Selected Symptoms */
+        .selected-symptoms-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .symptom-tag {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-weight: 500;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+
+        .symptom-tag:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .medicine-count {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: normal;
+            margin-left: 0.5rem;
+        }
+
+        .medicines-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .medicine-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .medicine-card:hover {
+            border-color: var(--success-color);
+            background: #f0fdf4;
+            transform: translateX(5px);
+        }
+
+        .medicine-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .medicine-info {
+            flex: 1;
+        }
+
+        .medicine-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1rem;
+        }
+
+        .medicine-type {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .medicine-badge {
+            color: var(--success-color);
+            font-size: 1.2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .metrics-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .contribution-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .symptom-indicator {
+                margin: 0 auto 0.5rem;
+            }
+
+            .symptoms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for load */
+        .prediction-card {
+            animation: slideUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .prediction-card:nth-child(1) { animation-delay: 0.1s; }
+        .prediction-card:nth-child(2) { animation-delay: 0.2s; }
+        .prediction-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section">
+            <h1><i class="fas fa-stethoscope"></i> Medical Analysis Report</h1>
+            <p>AI-powered disease prediction based on {{ total_symptoms }} symptoms</p>
+        </div>
+        
+        <div class="prediction-grid">
+            {% for prediction in predictions %}
+            <div class="prediction-card">
+                <div class="card-header">
+                    <h2 class="disease-name">
+                        <i class="fas fa-heartbeat"></i> {{ prediction.disease }}
+                    </h2>
+                    <div class="metrics-row">
+                        <div class="metric-badge">
+                            <i class="fas fa-chart-line"></i> {{ prediction.confidence }}% Confidence
+                        </div>
+                        <div class="metric-badge">
+                            <i class="fas fa-bullseye"></i> {{ prediction.symptom_match }}% Match
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-content">
+                    <div class="content-section">
+                        <h3 class="section-title">
+                            <span class="section-icon description-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            Medical Description
+                        </h3>
+                        <p class="description-text">{{ prediction.description }}</p>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h3 class="section-title">
+                            <span class="section-icon medicine-icon">
+                                <i class="fas fa-pills"></i>
+                            </span>
+                            Recommended Medications
+                            <span class="medicine-count">({{ prediction.medicines|length }} items)</span>
+                        </h3>
+                        
+                        <div class="medicines-container">
+                            {% for med in prediction.medicines %}
+                            <div class="medicine-card">
+                                <div class="medicine-icon">
+                                    <i class="fas fa-capsules"></i>
+                                </div>
+                                <div class="medicine-info">
+                                    <div class="medicine-name">{{ med|title }}</div>
+                                    <div class="medicine-type">Prescribed medication</div>
+                                </div>
+                                <div class="medicine-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="content-section">
+                        <h3 class="section-title">
+                            <span class="section-icon contribution-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </span>
+                            Symptom Analysis
+                        </h3>
+                        
+                        <div class="contributions-container">
+                            <div class="contribution-header">
+                                <div class="contribution-stats">
+                                    <span><i class="fas fa-plus-circle text-success"></i> Supporting</span>
+                                    <span><i class="fas fa-minus-circle text-danger"></i> Contradicting</span>
+                                    <span><i class="fas fa-equals"></i> Neutral</span>
+                                </div>
+                            </div>
+                            
+                            {% for contrib in prediction.symptom_contributions %}
+                            <div class="contribution-item {% if contrib.contribution > 0 %}positive{% elif contrib.contribution < 0 %}negative{% else %}neutral{% endif %}">
+                                <div class="symptom-indicator">
+                                    {% if contrib.contribution > 0 %}
+                                        <i class="fas fa-arrow-up"></i>
+                                    {% elif contrib.contribution < 0 %}
+                                        <i class="fas fa-arrow-down"></i>
+                                    {% else %}
+                                        <i class="fas fa-minus"></i>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="symptom-details">
+                                    <div class="symptom-name">{{ contrib.symptom|title }}</div>
+                                    <div class="symptom-impact">
+                                        {% if contrib.contribution > 0 %}
+                                            Supports diagnosis
+                                        {% elif contrib.contribution < 0 %}
+                                            Contradicts diagnosis
+                                        {% else %}
+                                            Neutral impact
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="contribution-value">
+                                    <span class="contribution-number">
+                                        {% if contrib.contribution > 0 %}+{% endif %}{{ contrib.contribution }}%
+                                    </span>
+                                    <span class="contribution-label">Impact</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="selected-symptoms-card">
+            <h3 class="section-title">
+                <span class="section-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                    <i class="fas fa-list-check"></i>
+                </span>
+                Your Selected Symptoms
+            </h3>
+            <div class="symptoms-grid">
+                {% for symptom in selected_symptoms %}
+                <div class="symptom-tag">
+                    <i class="fas fa-check-circle"></i> {{ symptom|title }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Clean up medicine and symptom names with JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clean medicine names
+            document.querySelectorAll('.medicine-name').forEach(function(element) {
+                let text = element.textContent;
+                // Remove brackets, quotes, and extra spaces
+                text = text.replace(/[\[\]'"]/g, '').trim();
+                element.textContent = text;
+            });
+            
+            // Clean symptom names
+            document.querySelectorAll('.symptom-name, .symptom-tag').forEach(function(element) {
+                let text = element.innerHTML;
+                // Replace underscores with spaces in symptom names
+                text = text.replace(/_/g, ' ');
+                element.innerHTML = text;
+            });
+            
+            // Animation code
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = Math.random() * 0.3 + 's';
+                        entry.target.style.animation = 'slideUp 0.6s ease forwards';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.contribution-item').forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>
