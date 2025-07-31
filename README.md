@@ -87,32 +87,37 @@ medicine_recommendation_system/
 
 3. **Install dependencies**
    ```bash
-   cd medirec
    pip install -r requirements.txt
    ```
 
-4. **Configure settings**
+4. **Navigate to Django project**
    ```bash
-   # Update ALLOWED_HOSTS in settings.py
-   ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+   cd medirec
    ```
 
-5. **Run migrations**
+5. **Configure settings (optional)**
+   ```bash
+   # Set environment variables or update settings.py
+   # DEBUG=True for development
+   # ALLOWED_HOSTS=localhost,127.0.0.1
+   ```
+
+6. **Run migrations**
    ```bash
    python manage.py migrate
    ```
 
-6. **Collect static files**
+7. **Collect static files**
    ```bash
    python manage.py collectstatic
    ```
 
-7. **Run development server**
+8. **Run development server**
    ```bash
    python manage.py runserver
    ```
 
-8. **Access the application**
+9. **Access the application**
    - Open your browser and go to `http://127.0.0.1:8000`
 
 ## 🚀 Deployment
