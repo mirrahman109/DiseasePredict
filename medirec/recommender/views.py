@@ -2,21 +2,22 @@ from django.shortcuts import render
 import pandas as pd
 import joblib
 import os
+from pathlib import Path
 
 # Load model and label encoder once
-BASE_DIR = r'C:\Users\Lenovo\Desktop\3-2 Project'
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-model = joblib.load(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'svc.pkl'))
-encoder = joblib.load(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'label_encoder.pkl'))
+model = joblib.load(os.path.join(BASE_DIR, 'svc.pkl'))
+encoder = joblib.load(os.path.join(BASE_DIR, 'label_encoder.pkl'))
 # Load disease to medicine mapping
-disease_med_map = pd.read_csv(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'Dataset', 'medications.csv'))
+disease_med_map = pd.read_csv(os.path.join(BASE_DIR, 'Dataset', 'medications.csv'))
 disease_to_med = dict(zip(disease_med_map['Disease'], disease_med_map['Medication']))
 
 # Load additional dataset mappings
-description_data = pd.read_csv(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'Dataset', 'description.csv'))
-precaution_data = pd.read_csv(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'Dataset', 'precautions_df.csv'))
-workout_data = pd.read_csv(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'Dataset', 'workout_df.csv'))
-diet_data = pd.read_csv(os.path.join(BASE_DIR, 'medicine_recommendation_system', 'Dataset', 'diets.csv'))
+description_data = pd.read_csv(os.path.join(BASE_DIR, 'Dataset', 'description.csv'))
+precaution_data = pd.read_csv(os.path.join(BASE_DIR, 'Dataset', 'precautions_df.csv'))
+workout_data = pd.read_csv(os.path.join(BASE_DIR, 'Dataset', 'workout_df.csv'))
+diet_data = pd.read_csv(os.path.join(BASE_DIR, 'Dataset', 'diets.csv'))
 
 # Create dictionaries for quick lookup
 disease_to_description = dict(zip(description_data['Disease'], description_data['Description']))
